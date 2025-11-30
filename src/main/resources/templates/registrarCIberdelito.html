@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportar Estafa Digital</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+
+        /* Form container centrado */
+        .container-form {
+            max-width: 580px;
+            margin: 80px auto 50px; /* 80px para separarlo del navbar */
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-align: center;
+            color: #222;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 15px;
+            color: #555;
+            margin-bottom: 35px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 13px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            outline: none;
+            transition: all .2s ease;
+            background: #fafafa;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #3aa6ff;
+            background: #fff;
+        }
+
+        textarea { height: 140px; resize: none; }
+
+        .file-box {
+            border: 2px dashed #ced4da;
+            border-radius: 12px;
+            padding: 35px;
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+            background: #fafafa;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin: 12px 0;
+            font-size: 14px;
+            color: #333;
+        }
+        .checkbox-wrapper input { width: 18px; height: 18px; margin-top: 2px; cursor: pointer; }
+        .checkbox-wrapper label { cursor: pointer; line-height: 1.3; }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: #118ab2;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 17px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background .2s ease;
+        }
+        .submit-btn:hover { background-color: #0d6c8a; }
+
+        .alerta {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .alerta-exito { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alerta-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    </style>
+</head>
+<body class="bg-light">
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/dev/index">🛡️ CiberSafe</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item"><a class="nav-link" href="#">Documentos</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Reportes</a></li>
+                <li class="nav-item"><a class="nav-link active" href="/dev/listado">Casos</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Denuncias</a></li>
+				<li class="nav-item ms-3"><a href="/dev/registrarse" class="btn btn-primary btn-sm">Registrarse</a></li>
+                <li class="nav-item ms-2"><a data-bs-toggle="modal" data-bs-target="#loginModal" class="btn btn-success btn-sm">Login</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- FORMULARIO -->
+<div class="container-form">
+    <h1>Reportar Estafa Digital</h1>
+    <p class="subtitle">Completa la información del incidente y adjunta evidencias para enviarlo.</p>
+
+    <form id="formEstafa" enctype="multipart/form-data">
+        <label for="titulo">Título del reporte</label>
+        <input type="text" id="titulo" name="titulo" placeholder="Suplantación por WhatsApp" required>
+
+        <label for="modalidad" style="margin-top: 18px;">Modalidad de estafa</label>
+        <select id="modalidad" name="codigoModalidad" required>
+            <option value="">-- Selecciona una opción --</option>
+            <option th:each="m : ${listadoModalidad}" th:value="${m.codigoModalidadEstafa}" th:text="${m.nombreModalidadEstafa}"></option>
+        </select>
+
+        <label for="medio" style="margin-top: 18px;">Medio de estafa</label>
+        <select id="medio" name="codigoMedio" required>
+            <option value="">-- Selecciona una opción --</option>
+            <option th:each="m : ${listadoMedio}" th:value="${m.codigoMedioEstafa}" th:text="${m.nombreMedioEstafa}"></option>
+        </select>
+
+        <label for="descripcion" style="margin-top: 18px;">Descripción del incidente</label>
+        <textarea id="descripcion" name="descripcion" placeholder="Escribe los detalles..." required></textarea>
+
+        <input type="file" id="imagen" name="imagen" accept="image/*" required>
+
+        <label for="ciberdelincuente" style="margin-top: 18px;">Presunto implicado</label>
+        <input id="ciberdelincuente" name="ciberdelincuente" placeholder="Escribe los detalles..." required>
+
+        <div class="checkbox-wrapper">
+            <input type="checkbox" id="terminos" name="terminos" required>
+            <label for="terminos">Acepto los términos y condiciones del uso de la plataforma</label>
+        </div>
+
+        <div class="checkbox-wrapper">
+            <input type="checkbox" id="formal" name="formal">
+            <label for="formal">Enviar denuncia formal a la DIVINDAT</label>
+        </div>
+
+        <button class="submit-btn" type="submit" id="btnEnviar">Enviar Reporte</button>
+    </form>
+
+    <div id="mensaje" class="alerta" style="display:none;"></div>
+</div>
+<!-- BOTÓN FLOTANTE -->
+<button id="chatToggle" class="btn btn-primary rounded-circle position-fixed"
+    style="bottom: 20px; right: 20px; width: 60px; height: 60px;">
+    <i class="bi bi-chat-dots fs-4"></i>
+</button>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.getElementById("formEstafa").addEventListener("submit", function(e){
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+    const mensajeDiv = document.getElementById("mensaje");
+    const btnEnviar = document.getElementById("btnEnviar");
+
+    const elementos = form.querySelectorAll("input, select, textarea, button");
+    elementos.forEach(el => el.disabled = true);
+    const textoOriginal = btnEnviar.innerText;
+    btnEnviar.innerText = "Registrando...";
+
+    fetch("/dev/registrar", { method: "POST", body: formData })
+    .then(response => response.text())
+    .then(data => {
+        mensajeDiv.innerText = data;
+        mensajeDiv.className = "alerta alerta-exito";
+        mensajeDiv.style.display = "block";
+        form.reset();
+        elementos.forEach(el => el.disabled = false);
+        btnEnviar.innerText = textoOriginal;
+    })
+    .catch(error => {
+        console.error(error);
+        mensajeDiv.innerText = "Error al registrar la estafa";
+        mensajeDiv.className = "alerta alerta-error";
+        mensajeDiv.style.display = "block";
+        elementos.forEach(el => el.disabled = false);
+        btnEnviar.innerText = textoOriginal;
+    });
+});
+</script>
+</body>
+</html>
