@@ -85,7 +85,7 @@ public class EstafaController {
 		
 		model.addAttribute("listadoMedio",medEstServices.listaMedioEstafas());
 		model.addAttribute("listadoModalidad",modEstServices.listaModalidadEstafas());
-	    return "registrarCiberdelito";
+	    return "registrarCiberdelito"; 
 	}
 	
 	@PostMapping("/registrar")
